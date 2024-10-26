@@ -110,7 +110,7 @@ class ProductSize(models.Model):
         unique_together = ('product', 'size')  # Ensures each product has unique size entries
 
     def __str__(self):
-        return self.product_name
+        return self.size
 
 
 
