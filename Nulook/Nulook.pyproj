@@ -76,6 +76,7 @@
     <Content Include="app\templates\app\account.html" />
     <Content Include="app\templates\app\cart.html" />
     <Content Include="app\templates\app\filter.html" />
+    <Content Include="app\templates\app\filtersearch.html" />
     <Content Include="app\templates\app\kids.html" />
     <Content Include="app\templates\app\men.html" />
     <Content Include="app\templates\app\search.html" />

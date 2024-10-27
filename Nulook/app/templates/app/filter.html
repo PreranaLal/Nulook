@@ -1,55 +1,94 @@
-<form method="get" action="{% url 'women' %}" class="filter_form">
+<form method="GET" action="{% url 'filter_search' %}" class="filter_form">
+    <!-- Category Filter -->
+    <div class="filter">
+        <label for="category">Category:</label>
+        <div class="checkbox-group">
+            <label><input type="checkbox" name="category" value="womens">Womens</label>
+            <label><input type="checkbox" name="category" value="mens">Men</label>
+            <label><input type="checkbox" name="category" value="kids">Kids</label>
+            <label><input type="checkbox" name="category" value="accessories">Accessories</label>
+            <label><input type="checkbox" name="category" value="shoes">Shoes</label>
+        </div>
+    </div>
+
     <!-- Color Filter -->
     <div class="filter">
         <label for="color">Color:</label>
-        <select id="color" name="color">
-            <option value="">All Colors</option>
-            <option value="Red">Red</option>
-            <option value="Blue">Blue</option>
-            <option value="Green">Green</option>
-            <option value="Black">Black</option>
-            <option value="Brown">Brown</option>
-            <option value="Orange">Orange</option>
-            <!-- Add more color options as needed -->
-        </select>
+        <div class="checkbox-group">
+            <label><input type="checkbox" name="color" value="Blue">Blue</label>
+            <label><input type="checkbox" name="color" value="Red">Red</label>
+            <label><input type="checkbox" name="color" value="Orange">Orange</label>
+            <label><input type="checkbox" name="color" value="Yellow">Yellow</label>
+            <label><input type="checkbox" name="color" value="Green">Green</label>
+            <label><input type="checkbox" name="color" value="Purple">Purple</label>
+            <label><input type="checkbox" name="color" value="Black">Black</label>
+            <label><input type="checkbox" name="color" value="White">White</label>
+            <label><input type="checkbox" name="color" value="Gray">Gray</label>
+            <label><input type="checkbox" name="color" value="Pink">Pink</label>
+            <label><input type="checkbox" name="color" value="Teal">Teal</label>
+            <label><input type="checkbox" name="color" value="Magenta">Magenta</label>
+            <label><input type="checkbox" name="color" value="Lilac">Lilac</label>
+            <label><input type="checkbox" name="color" value="Peach">Peach</label>
+            <label><input type="checkbox" name="color" value="Maroon">Maroon</label>
+            <label><input type="checkbox" name="color" value="Beige">Beige</label>
+            <label><input type="checkbox" name="color" value="Gold">Gold</label>
+            <label><input type="checkbox" name="color" value="Silver">Silver</label>
+            <label><input type="checkbox" name="color" value="Rose Gold">Rose Gold</label>
+            <label><input type="checkbox" name="color" value="Bronze">Bronze</label>
+            <label><input type="checkbox" name="color" value="Indigo">Indigo</label>
+            <label><input type="checkbox" name="color" value="Hot Pink">Hot Pink</label>
+            <label><input type="checkbox" name="color" value="Cyan">Cyan</label>
+            <label><input type="checkbox" name="color" value="Brown">Brown</label>
+        </div>
     </div>
 
     <!-- Size Filter -->
     <div class="filter">
         <label for="size">Size:</label>
-        <select id="size" name="size">
-            <option value="">All Sizes</option>
-            <option value="S">S</option>
-            <option value="M">M</option>
-            <option value="L">L</option>
-            <!-- Add more size options as needed -->
-        </select>
+        <div class="checkbox-group">
+            <label><input type="checkbox" name="size" value="S">Small</label>
+            <label><input type="checkbox" name="size" value="M">Medium</label>
+            <label><input type="checkbox" name="size" value="L">Large</label>
+            <label><input type="checkbox" name="size" value="4">4</label>
+            <label><input type="checkbox" name="size" value="5">5</label>
+            <label><input type="checkbox" name="size" value="6">6</label>
+            <label><input type="checkbox" name="size" value="7">7</label>
+            <label><input type="checkbox" name="size" value="8">8</label>
+            <label><input type="checkbox" name="size" value="9">9</label>
+            <label><input type="checkbox" name="size" value="10">10</label>
+            <label><input type="checkbox" name="size" value="11">11</label>
+            <label><input type="checkbox" name="size" value="12">12</label>
+            <label><input type="checkbox" name="size" value="13">13</label>
+        </div>
     </div>
 
     <!-- Type Filter -->
     <div class="filter">
         <label for="type">Type:</label>
-        <select id="type" name="type">
-            <option value="">All Types</option>
-            <option value="Pants">Pants</option>
-            <option value="Dress">Dress</option>
-            <option value="Skirt">Skirt</option>
-            <!-- Add more type options as needed -->
-        </select>
+        <div class="checkbox-group">
+            <label><input type="checkbox" name="type" value="Pants">Pants</label>
+            <label><input type="checkbox" name="type" value="Dress">Dress</label>
+            <label><input type="checkbox" name="type" value="Shirt">Shirt</label>
+            <label><input type="checkbox" name="type" value="Bag">Bag</label>
+            <label><input type="checkbox" name="type" value="Necklace">Necklace</label>
+            <label><input type="checkbox" name="type" value="Bracelet">Bracelet</label>
+            <label><input type="checkbox" name="type" value="Heels">Heels</label>
+        </div>
     </div>
 
-    <!-- Price Order Filter -->
+    <!-- Price Filter -->
     <div class="filter">
-        <label for="price_order">Price Order:</label>
-        <select id="price_order" name="price_order">
-            <option value="">Sort by Price</option>
-            <option value="cheapest_first">Cheapest First</option>
-            <option value="expensive_first">Expensive First</option>
-        </select>
+        <label for="price_order">Price:</label>
+        <div class="checkbox-group">
+            <label><input type="radio" name="price" value="below_20"> Below $20</label>
+            <label><input type="radio" name="price" value="20_to_40">$20 - $40</label>
+            <label><input type="radio" name="price" value="40_to_60">$40 - $60</label>
+            <label><input type="radio" name="price" value="60_to_80">$60 - $80</label>
+            <label><input type="radio" name="price" value="above_80">Above $80</label>
+        </div>
     </div>
 
-    <!-- Apply Filters Button -->
-    <div class="filter">
+    <div class="apply-filters">
         <button type="submit">Apply Filters</button>
     </div>
 </form>

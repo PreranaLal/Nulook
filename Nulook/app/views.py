@@ -1,6 +1,7 @@
 """
 Definition of views.
 """
+from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from .models import Customer, Product, Category,Wishlist, WishlistItem
 from datetime import datetime
@@ -18,29 +19,85 @@ def home(request):
             'year':datetime.now().year,
         }
     )
+
+def filter_search(request):
+    """Handles filtering products based on the form inputs."""
+    
+    # Get all products to start with
+    products = Product.objects.all()
+
+    # Category filtering
+    categories = request.GET.getlist('category')  # Allow multiple selection
+    if categories:
+        # Filter categories by category names
+        category_objects = Category.objects.filter(category_name__in=categories)
+        products = products.filter(category__in=category_objects)
+
+    # Color filtering
+    colors = request.GET.getlist('color')  # Allow multiple selection for colors
+    if colors:
+        # Filter products by their associated colors
+        products = products.filter(product_colour__color_name__in=colors).distinct()
+
+    # Size filtering
+    sizes = request.GET.getlist('size')  # Allow multiple selection for sizes
+    if sizes:
+        products = products.filter(product_sizes__size__in=sizes).distinct()
+
+    # Type filtering
+    types = request.GET.getlist('type')  # Allow multiple selection for types
+    if types:
+        products = products.filter(product_type__in=types)
+
+    # Price filtering (Single select)
+    price_order = request.GET.get('price')
+    if price_order:
+        if price_order == 'below_20':
+            products = products.filter(product_price__lt=20.0)
+        elif price_order == '20_to_40':
+            products = products.filter(product_price__gte=20.0, product_price__lte=40.0)
+        elif price_order == '40_to_60':
+            products = products.filter(product_price__gte=40.0, product_price__lte=60.0)
+        elif price_order == '60_to_80':
+            products = products.filter(product_price__gte=60.0, product_price__lte=80.0)
+        elif price_order == 'above_80':
+            products = products.filter(product_price__gt=80.0)
+
+    return render(
+        request,
+        'app/filtersearch.html',
+        {
+            'title': 'Filtered Results',
+            'products': products,  # Pass the filtered products to the template
+        }
+    )
+
+
 def search(request):
     """Handles search queries and displays search results."""
     assert isinstance(request, HttpRequest)
     
     query = request.GET.get('q', '')  # Get the search query from the GET request
-    
+    results = Product.objects.none()  # Default to no results if no query
+
     if query:
         # Split the query into individual keywords
         keywords = query.split()
-        
+
         # Build a Q object to filter products containing any of the keywords
-        from django.db.models import Q
         query_filter = Q()
+
         for keyword in keywords:
-            query_filter |= Q(name__icontains=keyword)  # Case-insensitive search
-        
+            query_filter |= (
+                Q(product_name__icontains=keyword) |     # Case-insensitive search in product name
+                Q(product_description__icontains=keyword) |  # Case-insensitive search in product description
+                Q(category__category_name__icontains=keyword) |  # Search in related category
+                Q(product_type__icontains=keyword) |  # Search in product_type field
+                Q(product_colour__color_name__icontains=keyword)  # Search in related color field (many-to-many)
+            )
+
         # Apply the filter to the Product model
-        results = Product.objects.filter(query_filter)
-    else:
-        results = Product.objects.none()  # No results if query is empty
-
-    
-
+        results = Product.objects.filter(query_filter).distinct()  # Avoid duplicates
 
     return render(
         request,
@@ -52,6 +109,8 @@ def search(request):
             'products': results,  # Pass search results to the template
         }
     )
+
+
 
 def contact(request):
     """Renders the contact page."""
@@ -89,25 +148,6 @@ def women(request):
     # Fetch products belonging to the 'womens' category
     products = Product.objects.filter(category=womens_category)
 
-    color_filter = request.GET.get('color')
-    size_filter = request.GET.get('size')
-    type_filter = request.GET.get('type')
-    price_order = request.GET.get('price_order')
-
-    if color_filter:
-        products = products.filter(color=color_filter)
-    if size_filter:
-        products = products.filter(size=size_filter)
-    if type_filter:
-        products = products.filter(type=type_filter)
-    if price_order:
-        if price_order == 'cheapest_first':
-            products = products.order_by('price')
-        elif price_order == 'expensive_first':
-            products = products.order_by('-price')
-
-
-
     return render(
         request,
         'app/women.html',
@@ -128,24 +168,6 @@ def men(request):
 
     # Fetch products belonging to the 'mens' category
     products = Product.objects.filter(category=mens_category)
-
-    color_filter = request.GET.get('color')
-    size_filter = request.GET.get('size')
-    type_filter = request.GET.get('type')
-    price_order = request.GET.get('price_order')
-
-    if color_filter:
-        products = products.filter(color=color_filter)
-    if size_filter:
-        products = products.filter(size=size_filter)
-    if type_filter:
-        products = products.filter(type=type_filter)
-    if price_order:
-        if price_order == 'cheapest_first':
-            products = products.order_by('price')
-        elif price_order == 'expensive_first':
-            products = products.order_by('-price')
-
 
     return render(
         request,
@@ -168,23 +190,6 @@ def kids(request):
     # Fetch products belonging to the 'kids' category
     products = Product.objects.filter(category=kids_category)
 
-    color_filter = request.GET.get('color')
-    size_filter = request.GET.get('size')
-    type_filter = request.GET.get('type')
-    price_order = request.GET.get('price_order')
-
-    if color_filter:
-        products = products.filter(color=color_filter)
-    if size_filter:
-        products = products.filter(size=size_filter)
-    if type_filter:
-        products = products.filter(type=type_filter)
-    if price_order:
-        if price_order == 'cheapest_first':
-            products = products.order_by('price')
-        elif price_order == 'expensive_first':
-            products = products.order_by('-price')
-
     return render(
 
         request,
@@ -206,24 +211,6 @@ def shoes(request):
 
     # Fetch products belonging to the 'shoes' category
     products = Product.objects.filter(category=shoes_category)
-
-    color_filter = request.GET.get('color')
-    size_filter = request.GET.get('size')
-    type_filter = request.GET.get('type')
-    price_order = request.GET.get('price_order')
-
-    if color_filter:
-        products = products.filter(color=color_filter)
-    if size_filter:
-        products = products.filter(size=size_filter)
-    if type_filter:
-        products = products.filter(type=type_filter)
-    if price_order:
-        if price_order == 'cheapest_first':
-            products = products.order_by('price')
-        elif price_order == 'expensive_first':
-            products = products.order_by('-price')
-
     return render(
         request,
         'app/shoes.html',
@@ -244,23 +231,6 @@ def accessories(request):
 
     # Fetch products belonging to the 'accessories' category
     products = Product.objects.filter(category=accessories_category)
-
-    color_filter = request.GET.get('color')
-    size_filter = request.GET.get('size')
-    type_filter = request.GET.get('type')
-    price_order = request.GET.get('price_order')
-
-    if color_filter:
-        products = products.filter(color=color_filter)
-    if size_filter:
-        products = products.filter(size=size_filter)
-    if type_filter:
-        products = products.filter(type=type_filter)
-    if price_order:
-        if price_order == 'cheapest_first':
-            products = products.order_by('price')
-        elif price_order == 'expensive_first':
-            products = products.order_by('-price')
 
     return render(
         request,
